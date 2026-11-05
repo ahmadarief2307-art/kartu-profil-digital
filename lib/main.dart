@@ -6,6 +6,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await PrefService.init();
+
+  // Menampilkan daftar key SharedPreferences.
+  debugPrint('Isi prefs: ${prefs.debugKeys}');
+
   await prefs.increaseOpenCount();
 
   runApp(MyApp(prefs: prefs));
@@ -26,8 +30,8 @@ class _MyAppState extends State<MyApp> {
       ValueNotifier(widget.prefs.isDarkMode);
 
   void _changeTheme(bool value) {
-    _isDark.value = value;             // Mengubah tampilan sekarang
-    widget.prefs.setDarkMode(value);   // Menyimpan pilihan tema
+    _isDark.value = value;
+    widget.prefs.setDarkMode(value);
   }
 
   @override

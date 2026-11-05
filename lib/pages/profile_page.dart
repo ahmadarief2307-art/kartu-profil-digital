@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _profile = widget.prefs.profile;
   }
 
+  // ---------- Edit Profil ----------
   Future<void> _edit() async {
     final result = await Navigator.push<ProfileData>(
       context,
@@ -46,6 +47,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Profil tersimpan')),
+    );
+  }
+
+  // ---------- Reset Profil ----------
+  Future<void> _reset() async {
+    await widget.prefs.clearProfile();
+
+    if (!mounted) return;
+
+    setState(() => _profile = widget.prefs.profile);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Profil dikembalikan ke bawaan'),
+      ),
     );
   }
 
@@ -72,6 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // ---------- Kartu Profil ----------
           Card(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -110,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
           const SizedBox(height: 8),
 
-          // Pengaturan Dark Mode
+          // ---------- Dark Mode ----------
           SwitchListTile(
             secondary: const Icon(Icons.dark_mode),
             title: const Text('Mode Gelap'),
@@ -118,9 +135,18 @@ class _ProfilePageState extends State<ProfilePage> {
             onChanged: widget.onThemeChanged,
           ),
 
+          const SizedBox(height: 16),
+
+          // ---------- Tombol Reset ----------
+          OutlinedButton.icon(
+            onPressed: _reset,
+            icon: const Icon(Icons.restore),
+            label: const Text('Reset Profil'),
+          ),
+
           const SizedBox(height: 24),
 
-          // Penghitung buka aplikasi
+          // ---------- Penghitung Buka Aplikasi ----------
           Center(
             child: Text(
               'Kartu ini sudah dibuka ${widget.prefs.openCount} kali',

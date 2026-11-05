@@ -39,7 +39,6 @@ class PrefService {
     try {
       return ProfileData.fromJson(raw);
     } catch (_) {
-      // Jika data rusak, gunakan data bawaan.
       return ProfileData.defaults;
     }
   }
@@ -51,4 +50,7 @@ class PrefService {
   Future<void> clearProfile() async {
     await _prefs.remove(_kProfile);
   }
+
+  // ---------- Debugging ----------
+  Set<String> get debugKeys => _prefs.getKeys();
 }
