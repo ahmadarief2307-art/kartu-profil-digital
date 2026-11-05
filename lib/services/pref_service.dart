@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/profile_data.dart';
 
 class PrefService {
   PrefService._(this._prefs);
@@ -7,6 +8,7 @@ class PrefService {
   // Semua key dikumpulkan di sini.
   static const _kOpenCount = 'open_count';
   static const _kDarkMode = 'is_dark_mode';
+  static const _kProfile = 'profile_data';
 
   /// Dipanggil sekali saat aplikasi mulai.
   static Future<PrefService> init() async {
@@ -17,12 +19,36 @@ class PrefService {
   // ---------- Penghitung buka aplikasi ----------
   int get openCount => _prefs.getInt(_kOpenCount) ?? 0;
 
-  Future<void> increaseOpenCount() =>
-      _prefs.setInt(_kOpenCount, openCount + 1);
+  Future<void> increaseOpenCount() async {
+    await _prefs.setInt(_kOpenCount, openCount + 1);
+  }
 
   // ---------- Tema ----------
   bool get isDarkMode => _prefs.getBool(_kDarkMode) ?? false;
 
-  Future<void> setDarkMode(bool value) =>
-      _prefs.setBool(_kDarkMode, value);
+  Future<void> setDarkMode(bool value) async {
+    await _prefs.setBool(_kDarkMode, value);
+  }
+
+  // ---------- Profil ----------
+  ProfileData get profile {
+    final raw = _prefs.getString(_kProfile);
+
+    if (raw == null) return ProfileData.defaults;
+
+    try {
+      return ProfileData.fromJson(raw);
+    } catch (_) {
+      // Jika data rusak, gunakan data bawaan.
+      return ProfileData.defaults;
+    }
+  }
+
+  Future<void> saveProfile(ProfileData profile) async {
+    await _prefs.setString(_kProfile, profile.toJson());
+  }
+
+  Future<void> clearProfile() async {
+    await _prefs.remove(_kProfile);
+  }
 }
