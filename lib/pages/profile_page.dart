@@ -3,8 +3,16 @@ import '../models/profile_data.dart';
 import '../services/pref_service.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, required this.prefs});
+  const ProfilePage({
+    super.key,
+    required this.prefs,
+    required this.isDark,
+    required this.onThemeChanged,
+  });
+
   final PrefService prefs;
+  final bool isDark;
+  final ValueChanged<bool> onThemeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +56,16 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Pengaturan Dark Mode
+          SwitchListTile(
+            title: const Text('Dark Mode'),
+            subtitle: const Text('Aktifkan tema gelap'),
+            value: isDark,
+            onChanged: onThemeChanged,
           ),
         ],
       ),
