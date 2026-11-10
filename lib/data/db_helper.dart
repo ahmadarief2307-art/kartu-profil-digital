@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DbHelper {
   DbHelper._(); // constructor private: tidak bisa dibuat sembarangan
@@ -16,6 +18,15 @@ class DbHelper {
   Future<Database> get database async => _db ??= await _open();
 
   Future<Database> _open() async {
+    // Inisialisasi FFI untuk Windows/Linux/macOS desktop
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.windows ||
+         defaultTargetPlatform == TargetPlatform.linux ||
+         defaultTargetPlatform == TargetPlatform.macOS)) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+
     final path = join(await getDatabasesPath(), _dbName);
     return openDatabase(
       path,
