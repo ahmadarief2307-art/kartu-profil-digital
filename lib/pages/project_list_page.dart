@@ -97,10 +97,23 @@ class _ProjectListPageState extends State<ProjectListPage> {
                   ),
                   isThreeLine: true,
                   onTap: () => _openForm(p), // ← UPDATE: buka form dalam mode edit
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    tooltip: 'Hapus',
-                    onPressed: () => _confirmDelete(p), // ← DELETE
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(p.isFavorite ? Icons.star : Icons.star_border),
+                        tooltip: 'Favorit',
+                        onPressed: () async {
+                          await _repo.update(p.copyWith(isFavorite: !p.isFavorite));
+                          _reload();
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        tooltip: 'Hapus',
+                        onPressed: () => _confirmDelete(p),
+                      ),
+                    ],
                   ),
                 ),
               );
